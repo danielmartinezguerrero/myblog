@@ -55,16 +55,25 @@ export async function getPostById(req: Request, res: Response) {
 
 export async function createPost(req: Request, res: Response) {
   try {
-    const { title, content, excerpt, authorId } = req.body;
+    const { title, content, excerpt } = req.body;
 
-    if (!title || !content || !excerpt || !authorId) {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    if (!title || !content || !excerpt) {
       return res.status(400).json({
-        error: 'Missing required fields: title, content, excerpt, authorId',
+        error: 'Missing required fields: title, content, excerpt',
       });
     }
 
     const post = await prisma.post.create({
-      data: { title, content, excerpt, authorId: Number(authorId) },
+      data: {
+        title,
+        content,
+        excerpt,
+        authorId: req.user.userId,
+      },
     });
 
     res.status(201).json(post);
