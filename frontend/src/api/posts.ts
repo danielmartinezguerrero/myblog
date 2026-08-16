@@ -17,7 +17,7 @@ export async function fetchPostById(id: number): Promise<Post> {
 
   if (!response.ok) {
     if (response.status === 404) {
-      throw new Error('Post not found');
+      throw new Error('404. Post not found');
     }
     throw new Error(`Failed to fetch post (${response.status})`);
   }
